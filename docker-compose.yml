@@ -1,0 +1,59 @@
+version: "2.1"
+
+services:
+  db:
+    image: postgres
+    container_name: db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: extagramdb
+    networks:
+      - test
+  minio:
+    image: minio/minio
+    command: server /data
+    environment:
+      MINIO_ACCESS_KEY: "minio"
+      MINIO_SECRET_KEY: "minio123"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio:/data
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set myminio http://minio:9000 minio minio123;
+      /usr/bin/mc mb myminio/mybucket;
+      /usr/bin/mc policy set public myminio/mybucket;
+      exit 0;
+      "
+
+
+#  app:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - test
+#    depends_on:
+#      - db
+#    volumes:
+#      - gradle-cache:/home/gradle/.gradle
+
+networks:
+  test:
+    driver: bridge
+
+volumes:
+  pgdata:
+  minio:

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="style.css" >
+
+<form method="POST" enctype="multipart/form-data" action="save">
+    <input type="text" name="name" placeholder="Write something...">
+    <input id="file" type="file" name="photo" onchange="document.getElementById('preview').src=window.URL.createObjectURL(event.target.files[0])">
+    <label for="file"><img id="preview" src="preview.svg"></label>
+    <input type="submit" value="Publish">
+</form>
+
+<div class="post" th:each="p : ${posts}">
+    <p th:text="${{p.content}}" />
+    <img th:src="@{${'/photo/' + p.photourl}}" />
+</div>
