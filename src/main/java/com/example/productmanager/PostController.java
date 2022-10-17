@@ -34,8 +34,7 @@ public class PostController {
     }
 
     @PostMapping("/save")
-    public String save(@RequestParam("photo") MultipartFile uploadedFile, @RequestParam("name") String name) {
-        try {
+    public String save(@RequestParam("photo") MultipartFile uploadedFile, @RequestParam("name") String name) throws Exception {
             String uuid = UUID.randomUUID().toString();
             minioClient.putObject(PutObjectArgs.builder()
                     .bucket(bucketName)
@@ -45,15 +44,10 @@ public class PostController {
 
             postRepository.save(new Post(name, uuid));
             return "redirect:/";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     @GetMapping("/photo/{id}")
-    public ResponseEntity<?> getPhoto(@PathVariable String id) {
-        try {
+    public ResponseEntity<?> getPhoto(@PathVariable String id) throws Exception {
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(IOUtils.toByteArray(
@@ -61,10 +55,6 @@ public class PostController {
                                     .bucket(bucketName)
                                     .object(id)
                                     .build())));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     @GetMapping(path = "/logout")
