@@ -72,4 +72,9 @@ public class PostController {
         request.logout();
         return "redirect:/";
     }
+
+    @GetMapping(path = "/error")
+    public String error(){
+        return "error";
+    }
 }
