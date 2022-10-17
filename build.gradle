@@ -24,8 +24,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.flywaydb:flyway-core'
 	implementation 'io.minio:minio:8.4.5'
-//	implementation 'commons-io:commons-io'
-//	implementation 'com.squareup.okhttp3:okhttp'
+	implementation 'org.keycloak:keycloak-spring-boot-starter:19.0.3'
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

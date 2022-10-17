@@ -1,0 +1,23 @@
+.login-pf body {
+    background: #fafafa;
+}
+
+.card-pf {
+    max-width: 500px;
+    margin: auto;
+}
+
+.pf-c-button.pf-m-primary {
+    background-color: #4a86e8;
+}
+
+#kc-header-wrapper {
+    background-image: url(extagram-logo.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 400px;
+    height: 100px;
+    color: transparent;
+    margin: auto;
+}

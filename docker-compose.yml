@@ -1,18 +1,19 @@
 version: "2.1"
 
 services:
-  db:
+  appdb:
     image: postgres
-    container_name: db
+    container_name: appdb
     ports:
       - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - appdb:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: example
       POSTGRES_DB: extagramdb
     networks:
       - test
+
   minio:
     image: minio/minio
     command: server /data
@@ -24,6 +25,7 @@ services:
       - "9001:9001"
     volumes:
       - minio:/data
+
   createbuckets:
     image: minio/mc
     depends_on:
@@ -35,6 +37,37 @@ services:
       /usr/bin/mc policy set public myminio/mybucket;
       exit 0;
       "
+
+  keycloakdb:
+    image: postgres
+    volumes:
+      - keycloakdb:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak123
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    command: ["start-dev", "--import-realm"]
+    #command: start-dev
+    ports:
+      - "7000:8080"
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: keycloakdb
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: keycloak123
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin123
+    volumes:
+      - ./realm-export.json:/opt/keycloak/data/import/realm.json:ro
+      - ./themes/:/opt/keycloak/themes/
+    depends_on:
+      - keycloakdb
 
 
 #  app:
@@ -55,5 +88,6 @@ networks:
     driver: bridge
 
 volumes:
-  pgdata:
+  appdb:
   minio:
+  keycloakdb:
